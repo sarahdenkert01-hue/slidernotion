@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Today's Mood & Energy</title>
+<style>
+  body {
+    background-color: #f7f6f3;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    padding-top: 30px; /* keeps it neat for embeds */
+  }
+
+  .card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 30px 40px;
+    max-width: 360px;
+    width: 90%;
+  }
+
+  h2 {
+    color: #222;
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .slider-container {
+    margin-bottom: 25px;
+  }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    background: linear-gradient(to right, black var(--value, 50%), #ddd var(--value, 50%));
+    outline: none;
+    transition: background 0.3s ease;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: black;
+    cursor: pointer;
+  }
+
+  input[type=range]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: black;
+    cursor: pointer;
+  }
+
+  .value {
+    font-size: 14px;
+    color: #333;
+    text-align: right;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="slider-container">
+      <h2>Today's Mood</h2>
+      <input id="mood" type="range" min="0" max="100" value="50" oninput="updateSlider(this)">
+      <div class="value" id="moodValue">50%</div>
+    </div>
+    <div class="slider-container">
+      <h2>Today's Energy</h2>
+      <input id="energy" type="range" min="0" max="100" value="50" oninput="updateSlider(this)">
+      <div class="value" id="energyValue">50%</div>
+    </div>
+  </div>
+
+<script>
+  function updateSlider(slider) {
+    const percent = slider.value;
+    slider.style.setProperty('--value', percent + '%');
+    document.getElementById(slider.id + 'Value').textContent = percent + '%';
+  }
+
+  // Initialize sliders
+  document.querySelectorAll('input[type=range]').forEach(updateSlider);
+</script>
+</body>
+</html>
