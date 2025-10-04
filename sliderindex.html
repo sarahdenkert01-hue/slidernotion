@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Notion Sliders</title>
+  <style>
+    /* remove all page-level padding that can create extra space in an iframe */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: auto;
+      background: #f7f6f3;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color: #000;
+    }
+
+    /* wrapper centers horizontally and keeps top padding minimal */
+    .wrapper {
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 340px;
+      margin: 0 auto;          /* horizontally centered in iframe */
+      padding: 8px 12px;      /* very small padding — prevents clipping on mobile */
+    }
+
+    /* the card (kept — you said you like the card) */
+    .card {
+      background: #f7f6f3;    /* keeps the card visually consistent with page */
+      border-radius: 12px;
+      padding: 12px 14px;     /* compact — not large */
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      margin: 0;              /* IMPORTANT: no top margin */
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 8px 0 6px;
+      font-size: 14px;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 6px;
+      background: linear-gradient(to right, #000 50%, #ccc 50%);
+      outline: none;
+      margin-top: 6px;
+    }
+
+    /* thumb styling */
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #000;
+      border: 2px solid #f7f6f3;
+      cursor: pointer;
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #000;
+      border: 2px solid #f7f6f3;
+      cursor: pointer;
+    }
+
+    .value {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #111;
+    }
+
+    /* make sure there is no weird extra space at the bottom */
+    .spacer { height: 0; margin: 0; padding: 0; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card" role="group" aria-label="Mood and Energy sliders">
+      <label for="mood">Today's Mood</label>
+      <input id="mood" type="range" min="0" max="100" step="1" value="50">
+      <div class="value" id="mood-value">50%</div>
+
+      <label for="energy">Today's Energy</label>
+      <input id="energy" type="range" min="0" max="100" step="1" value="50">
+      <div class="value" id="energy-value">50%</div>
+    </div>
+    <div class="spacer" aria-hidden="true"></div>
+  </div>
+
+  <script>
+    function updateSliderFill(slider) {
+      const v = Number(slider.value);
+      const min = Number(slider.min || 0);
+      const max = Number(slider.max || 100);
+      const pct = ((v - min) / (max - min)) * 100;
+      slider.style.background = `linear-gradient(to right, #000 ${pct}%, #ccc ${pct}%)`;
+    }
+
+    function hookup(id, valueId) {
+      const s = document.getElementById(id);
+      const v = document.getElementById(valueId);
+      const onInput = () => {
+        v.textContent = s.value + '%';
+        updateSliderFill(s);
+      };
+      s.addEventListener('input', onInput, { passive: true });
+      updateSliderFill(s);
+    }
+
+    hookup('mood','mood-value');
+    hookup('energy','energy-value');
+
+    /* extra: try to minimize iframe height by setting doc height to content height.
+       Notion may still impose its own embed height, but this helps some embed hosts*/
+    function setBodyHeightToContent() {
+      const h = document.documentElement.scrollHeight;
+      document.documentElement.style.height = h + 'px';
+      document.body.style.height = h + 'px';
+    }
+    // run after layout
+    requestAnimationFrame(setBodyHeightToContent);
+    // if sliders change content height, update again
+    window.addEventListener('resize', setBodyHeightToContent);
+  </script>
+</body>
+</html>
